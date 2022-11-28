@@ -21,6 +21,7 @@ type ServiceAccount struct {
 		Name      string
 		Namespace string
 	}
+	WellKnownPolicies map[string]bool `yaml:"wellKnownPolicies"`
 }
 
 // Creates a new ClusterConfig manifest wut Kind and ApiVersion set
