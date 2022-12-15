@@ -25,6 +25,7 @@ import (
 )
 
 var clusterConfig model.ClusterConfig
+var loggingTypes []string
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
@@ -34,6 +35,14 @@ var createCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		clusterConfig.Metadata.Name = args[0]
+
+		if len(loggingTypes) > 0 {
+			clusterConfig.CloudWatch = model.CloudWatch{
+				ClusterLogging: model.ClusterLogging{
+					EnableTypes: loggingTypes,
+				},
+			}
+		}
 
 		d, err := yaml.Marshal(&clusterConfig)
 		if err != nil {
@@ -50,6 +59,8 @@ func init() {
 
 	createCmd.Flags().StringVar(&clusterConfig.Metadata.Version, "version", "1.23", "EKS version to use, as semantic version")
 	createCmd.Flags().StringVar(&clusterConfig.Metadata.Region, "region", "eu-central-1", "AWS region to use")
+
+	createCmd.Flags().StringSliceVar(&loggingTypes, "enable-cluster-logging", nil, "Enable CloudWatch logging. Values: *, api, audit, authenticator, controllerManager, scheduler")
 
 	createCmd.Flags().BoolVar(&clusterConfig.IAM.WithOIDC, "with-oidc", false, "Create OIDC provider for EKS cluster")
 }

@@ -13,6 +13,7 @@ type ClusterConfig struct {
 		WithOIDC        bool             `yaml:"withOIDC"`
 		ServiceAccounts []ServiceAccount `yaml:"serviceAccounts"`
 	}
+	CloudWatch CloudWatch `yaml:"cloudWatch"`
 }
 
 // the Service Account
@@ -24,7 +25,15 @@ type ServiceAccount struct {
 	WellKnownPolicies map[string]bool `yaml:"wellKnownPolicies"`
 }
 
-// Creates a new ClusterConfig manifest wut Kind and ApiVersion set
+type CloudWatch struct {
+	ClusterLogging ClusterLogging `yaml:"clusterLogging"`
+}
+
+type ClusterLogging struct {
+	EnableTypes []string `yaml:"enableTypes,flow"`
+}
+
+// Creates a new ClusterConfig manifest with Kind and ApiVersion set
 func NewClusterConfig() ClusterConfig {
 	return ClusterConfig{
 		ApiVersion: "eksctl.io/v1alpha5",
